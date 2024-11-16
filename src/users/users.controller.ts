@@ -17,10 +17,7 @@ export class UsersController {
     return await this.usersService.findAll();
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return await this.usersService.findOne(+id);
-  }
+ 
 
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
