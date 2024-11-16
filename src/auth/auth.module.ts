@@ -1,20 +1,18 @@
 import { Module } from '@nestjs/common';
-import { RolesService } from './roles.service';
-import { RolesController } from './roles.controller';
-import { MongooseModule } from '@nestjs/mongoose';
-import { Role, RoleSchema } from './entities/role.entity';
 import { UsersModule } from 'src/users/users.module';
 import { RolesModule } from 'src/roles/roles.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { UserRolesModule } from 'src/user-roles/user-roles.module';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
    imports: [
    UsersModule,
    RolesModule,
-   UsersModule
+   UserRolesModule
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, JwtService],
 })
 export class AuthModule {}

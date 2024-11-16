@@ -18,31 +18,49 @@ export class AuthService {
   ) {}
 
   async validateUser(username: string, password: string) {
-    const user: any = await this.userService.findByUsername(username);
+    try{
+      const user: any = await this.userService.findByUsername(username);
+      console.log("user after validate ... ", user)
 
 const isMatch = await bcrypt.compare(password, user.password);
+console.log("isMatch", isMatch)
 
     if (user && isMatch) {
         const {password, ...result} = user;
-      return result;
+        console.log("result", result)
+      return result._doc;
     }
-    return null;
+    return null;}
+    catch (error) {
+      console.log("error", error)
+      throw error?.response?.data?.message
+    }
   }
 
   async login(user: any) {
+   try{ 
+    console.log("entered login service fn", user)
     const payload = { sub: user.userId, username: user.username };
+    const access_token = await this.jwtService.signAsync(payload);
     return {
-      access_token: await this.jwtService.signAsync(payload),
+      access_token,
     };
+  } catch (error) {
+    console.log("error", error)
+      throw error?.response?.data?.message
+    }
   }
 
   async hasPermission(userId: string, permission: string): Promise<boolean> {
     
-    const userRoles = await this.userRoleService.findByUserId(userId);
+   try{ const userRoles = await this.userRoleService.findByUserId(userId);
     const roles = await this.roleService.findAll();
     const userRoleIds: any = userRoles.map(userRole => userRole.roleId);
     const userRolesWithPermissions = roles.filter(role => userRoleIds.includes(role?._id)).map(role => role.permissions).flat();
-    return userRolesWithPermissions.includes(permission);
+    return userRolesWithPermissions.includes(permission);}
+     catch (error) {
+      throw error?.response?.data?.message
+     }
   
   }
 }

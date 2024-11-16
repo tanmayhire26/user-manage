@@ -8,11 +8,19 @@ export class AuthController {
 
       @Post('login')
         async login(@Body() loginDto: {username: string, password: string}) {
+            console.log("loginDto", loginDto)
+           try{ 
             const user =  await this.authService.validateUser(loginDto.username, loginDto.password);
             if(!user) {
                 throw "Invalid credentials";
             }
-            return await this.authService.login(user);
+            const result =  await this.authService.login(user);
+            console.log(result);
+            return result
+        }catch(e){
+                console.log(e)
+                throw e?.response?.data?.message
+            }
         }
 
 }

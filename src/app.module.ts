@@ -6,6 +6,7 @@ import { UsersModule } from './users/users.module';
 import { RolesModule } from './roles/roles.module';
 import { UserRolesModule } from './user-roles/user-roles.module';
 import { BlogModule } from './blog/blog.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -13,7 +14,8 @@ import { BlogModule } from './blog/blog.module';
     UsersModule,
     RolesModule,
     UserRolesModule,
-    BlogModule
+    BlogModule,
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],
