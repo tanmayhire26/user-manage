@@ -14,7 +14,7 @@ export class BlogController {
   constructor(private readonly blogService: BlogService) {}
 
   @Post()
-  @Roles('author')
+  // @Roles('author')
   @Permissions('blog_create')
   create(@Body() createBlogDto: CreateBlogDto, @Req() req: any) {
     return this.blogService.create(createBlogDto, req.user._id);
