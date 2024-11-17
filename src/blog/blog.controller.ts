@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
 import { BlogService } from './blog.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
@@ -6,6 +6,7 @@ import { Roles } from 'src/auth/roles.decorator';
 import { Permissions } from 'src/auth/permissions.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { PermissionsGuard } from 'src/auth/permissions.guard';
+import { Request } from 'express';
 
 @Controller('blog')
 @UseGuards(RolesGuard, PermissionsGuard)
@@ -15,27 +16,37 @@ export class BlogController {
   @Post()
   @Roles('author') 
   @Permissions('create_blog')
-  create(@Body() createBlogDto: CreateBlogDto) {
-    return this.blogService.create(createBlogDto);
+  create(@Body() createBlogDto: CreateBlogDto, @Req() req: any) {
+    return this.blogService.create(createBlogDto, req.user._id);
   }
-   @Permissions('read_blog')
+
   @Get()
+  @Permissions('read_blog')
   findAll() {
     return this.blogService.findAll();
   }
 
   @Get(':id')
+  @Permissions('read_blog')
   findOne(@Param('id') id: string) {
-    return this.blogService.findOne(+id);
+    return this.blogService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBlogDto: UpdateBlogDto) {
-    return this.blogService.update(+id, updateBlogDto);
+  @Roles('author')
+  @Permissions('update_blog')
+  update(
+    @Param('id') id: string, 
+    @Body() updateBlogDto: UpdateBlogDto,
+    @Req() req: any
+  ) {
+    return this.blogService.update(id, updateBlogDto, req.user._id);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.blogService.remove(+id);
+  @Roles('author')
+  @Permissions('delete_blog')
+  remove(@Param('id') id: string, @Req() req: any) {
+    return this.blogService.remove(id, req.user._id);
   }
 }
