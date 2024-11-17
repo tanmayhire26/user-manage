@@ -21,7 +21,7 @@ export class BlogService {
 
   async findAll() {
     return await this.blogModel.find({ isActive: true })
-      .populate('author', 'username email')
+      .populate('author')
       .exec();
   }
 

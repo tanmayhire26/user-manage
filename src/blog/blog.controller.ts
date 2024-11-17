@@ -14,38 +14,38 @@ export class BlogController {
   constructor(private readonly blogService: BlogService) {}
 
   @Post()
-  @Roles('author') 
-  @Permissions('create_blog')
+  @Roles('author')
+  @Permissions('blog_create')
   create(@Body() createBlogDto: CreateBlogDto, @Req() req: any) {
     return this.blogService.create(createBlogDto, req.user._id);
   }
 
   @Get()
-  @Permissions('read_blog')
+  @Permissions('blog_read')
   findAll() {
     return this.blogService.findAll();
   }
 
   @Get(':id')
-  @Permissions('read_blog')
+  @Permissions('blog_read')
   findOne(@Param('id') id: string) {
     return this.blogService.findOne(id);
   }
 
   @Patch(':id')
   @Roles('author')
-  @Permissions('update_blog')
+  @Permissions('blog_edit')
   update(
-    @Param('id') id: string, 
+    @Param('id') id: string,
     @Body() updateBlogDto: UpdateBlogDto,
-    @Req() req: any
+    @Req() req: any,
   ) {
     return this.blogService.update(id, updateBlogDto, req.user._id);
   }
 
   @Delete(':id')
   @Roles('author')
-  @Permissions('delete_blog')
+  @Permissions('blog_delete')
   remove(@Param('id') id: string, @Req() req: any) {
     return this.blogService.remove(id, req.user._id);
   }

@@ -30,4 +30,12 @@ export class RolesService {
   async remove(id: string) {
     return await this.roleModel.findByIdAndDelete(id).exec();
   }
+
+  async assignPermissions(id: string, permissions: string[]) {
+    return await this.roleModel.findByIdAndUpdate(
+      id,
+      { $addToSet: { permissions: { $each: permissions } } },
+      { new: true }
+    ).exec();
+  }
 }

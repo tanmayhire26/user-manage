@@ -14,9 +14,13 @@ export class PermissionsGuard implements CanActivate {
     if (!requiredPermissions) {
       return true; 
     }
+    console.log(
+      'REquired permissions in canActicvate guards .. ',requiredPermissions,
+    );
 
     const request = context.switchToHttp().getRequest();
     const user = request.user;
+    console.log("User in requ ... ", user);
 
     return user && user.permissions && requiredPermissions.every(permission => user.permissions.includes(permission));
   }

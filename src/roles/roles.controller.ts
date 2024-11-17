@@ -31,4 +31,12 @@ export class RolesController {
   async remove(@Param('id') id: string) {
     return await this.rolesService.remove(id);
   }
+
+  @Patch(':id/permissions')
+  async assignPermissions(
+    @Param('id') id: string,
+    @Body('permissions') permissions: string[]
+  ) {
+    return await this.rolesService.assignPermissions(id, permissions);
+  }
 }
