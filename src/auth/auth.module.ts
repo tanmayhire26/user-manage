@@ -11,20 +11,19 @@ import { JwtStrategy } from './jwt.strategy';
 
 @Module({
   imports: [
-    UsersModule,
-    RolesModule,
-    UserRolesModule,
-    PassportModule,
+    PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
-        // Make this async
         secret: configService.get('JWT_SECRET'),
         signOptions: {
           expiresIn: configService.get('JWT_EXPIRES_IN', '1h'),
         },
       }),
     }),
+    UsersModule,
+    RolesModule,
+    UserRolesModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],

@@ -114,4 +114,18 @@ export class UsersService {
       throw new BadRequestException(error?.response?.data.message);
     }
   }
+
+  async updateMe(userId: string, updateUserDto: UpdateUserDto) {
+    const safeUpdateDto = this.sanitizeUpdateDto(updateUserDto);
+    
+    return await this.userModel
+      .findByIdAndUpdate(userId, safeUpdateDto, { new: true })
+      .select('-password')  
+      .exec();
+  }
+
+  private sanitizeUpdateDto(dto: UpdateUserDto) {
+    const { password, roles, ...safeDto } = dto;
+    return safeDto;
+  }
 }

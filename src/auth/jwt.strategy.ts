@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
@@ -18,9 +18,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    console.log('payload in jwt strategy ... ', payload);
+    try{console.log('payload in jwt strategy ... ', payload);
     const user = await this.userService.getUserWithPermissions(payload.sub);
     console.log("USer to append to request")
-    return {...user, userId: payload.sub};
+    return {...user, userId: payload.sub};}
+    catch (error) {
+      console.log("error in jwt strategy", error)
+      throw new UnauthorizedException('Invalid token');
+    }
   }
 }
