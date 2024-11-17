@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException, Request, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException, Request, UseGuards, Req } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -19,7 +19,7 @@ export class UsersController {
   }
 
   @Get()
-  @Permissions('blog_read')
+  @Permissions('user_read')
   // @Public()
   async findAll() {
     console.log('in find all users service');
@@ -54,9 +54,10 @@ export class UsersController {
     }
   }
 
-  @Public()
+
   @Post('me')
-  async updateMe(@Request() req: any, @Body() updateUserDto: UpdateUserDto) {
+  async updateMe(@Req() req: any, @Body() updateUserDto: UpdateUserDto) {
+    console.log("in update me .... req.user", req.user)
     return await this.usersService.updateMe(req.user._id, updateUserDto);
   }
 }
