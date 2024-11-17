@@ -7,6 +7,7 @@ import { UserRolesService } from "src/user-roles/user-roles.service";
 import { UsersService } from "src/users/users.service";
 import * as bcrypt from 'bcrypt';
 import { JwtService } from "@nestjs/jwt";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class AuthService {
@@ -14,8 +15,13 @@ export class AuthService {
    private userService: UsersService,
    private roleService: RolesService,
    private userRoleService: UserRolesService,
-      private jwtService: JwtService
-  ) {}
+    private jwtService: JwtService,
+    private configService: ConfigService  // Add this
+
+  ) {
+        console.log('JWT_SECRET:', this.configService.get('JWT_SECRET'));
+
+  }
 
   async validateUser(username: string, password: string) {
     try{
@@ -39,8 +45,9 @@ console.log("isMatch", isMatch)
 
   async login(user: any) {
    try{ 
-    console.log("entered login service fn", user)
-    const payload = { sub: user.userId, username: user.username };
+    console.log("entered login service fn", user);
+    console.log("JWT_SECRET:", this.configService.get('JWT_SECRET'));
+    const payload = { sub: user._id, username: user.username };
     const access_token = await this.jwtService.signAsync(payload);
     return {
       access_token,
